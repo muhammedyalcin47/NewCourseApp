@@ -1,13 +1,12 @@
 package com.bilgeadam.newcourseapp.controller;
 
 import com.bilgeadam.newcourseapp.entity.Course;
+import com.bilgeadam.newcourseapp.exception.CourseNotFound;
 import com.bilgeadam.newcourseapp.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -28,11 +27,28 @@ public class CourseController {
        if (courseDB.isPresent())
        {
            course = courseDB.get();
+
+           return course;
        }
-       return course;
+       else
+       {
+           throw new CourseNotFound("Course not found with id:"+id);
+       }
     }
 
-    
+    @GetMapping("/course")
+    public List<Course> getCourses()
+    {
+        return courseRepository.findAll();
+    }
+
+
+    @PostMapping("/course")
+    public Course saceCourse(@RequestBody Course course)
+    {
+        return courseRepository.save(course);
+    }
+
 
 
 }
